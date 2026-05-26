@@ -2,13 +2,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
-import { getProducts, getSiteSettings, urlFor } from '@/lib/sanity';
+import { getProducts, getSiteSettings, getFeaturedProducts, urlFor } from '@/lib/sanity';
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function Home() {
   // Fetch data from Sanity CMS
   const products = await getProducts();
+  const featuredProducts = await getFeaturedProducts();
   const settings = await getSiteSettings();
   return (
     <>
@@ -46,23 +47,56 @@ export default async function Home() {
               <div className="blob b2"></div>
               <div className="blob b3"></div>
 
-              <div className="hero-card c1">
-                <div className="ph tint-date"></div>
-                <div className="label">Date & walnut</div>
-                <div className="sub">$6 · Piece</div>
-              </div>
+              {/* Featured Products - Show first 3 */}
+              {featuredProducts.length > 0 ? (
+                <>
+                  {featuredProducts.slice(0, 3).map((product, index) => {
+                    // Use hero image if available, otherwise fall back to regular image
+                    const displayImage = product.heroImage || product.image;
 
-              <div className="hero-card c2">
-                <div className="ph tint-mustard"></div>
-                <div className="label">Cranberry Lemon</div>
-                <div className="sub">$6 · Piece</div>
-              </div>
+                    return (
+                      <div key={product._id} className={`hero-card c${index + 1}`}>
+                        {displayImage ? (
+                          <div style={{position: 'relative', width: '100%', height: '180px', overflow: 'hidden', borderRadius: '12px 12px 0 0', marginBottom: '10px'}}>
+                            <Image
+                              src={urlFor(displayImage).width(300).height(300).url()}
+                              alt={product.name}
+                              fill
+                              sizes="240px"
+                              style={{objectFit: 'cover'}}
+                            />
+                          </div>
+                        ) : (
+                          <div className="ph tint-coral"></div>
+                        )}
+                        <div className="label">{product.name}</div>
+                        <div className="sub">${product.price} · {product.quantity}</div>
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                // Fallback to static cards if no featured products
+                <>
+                  <div className="hero-card c1">
+                    <div className="ph tint-date"></div>
+                    <div className="label">Date & walnut</div>
+                    <div className="sub">$6 · Piece</div>
+                  </div>
 
-              <div className="hero-card c3">
-                <div className="ph tint-pink"></div>
-                <div className="label">Lunchbox bites</div>
-                <div className="sub">$2 . Each</div>
-              </div>
+                  <div className="hero-card c2">
+                    <div className="ph tint-mustard"></div>
+                    <div className="label">Cranberry Lemon</div>
+                    <div className="sub">$6 · Piece</div>
+                  </div>
+
+                  <div className="hero-card c3">
+                    <div className="ph tint-pink"></div>
+                    <div className="label">Lunchbox bites</div>
+                    <div className="sub">$2 . Each</div>
+                  </div>
+                </>
+              )}
 
               <div className="sticker s1">No refined sugar!</div>
               <div className="sticker s2">Kid approved</div>

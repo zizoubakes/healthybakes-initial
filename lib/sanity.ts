@@ -26,6 +26,7 @@ export interface Product {
   }
   quantity: string
   image: any
+  heroImage?: any
   description: string
   price: number
   available: boolean
@@ -46,7 +47,7 @@ export interface SiteSettings {
 
 // Fetch all products
 export async function getProducts(): Promise<Product[]> {
-  const query = `*[_type == "product" && available == true] | order(_createdAt desc) {
+  const query = `*[_type == "product" && available == true] | order(sortOrder asc, _createdAt desc) {
     _id,
     name,
     slug,
@@ -68,12 +69,13 @@ export async function getProducts(): Promise<Product[]> {
 
 // Fetch featured products
 export async function getFeaturedProducts(): Promise<Product[]> {
-  const query = `*[_type == "product" && featured == true && available == true] | order(_createdAt desc) {
+  const query = `*[_type == "product" && featured == true && available == true] | order(sortOrder asc, _createdAt desc) {
     _id,
     name,
     slug,
     quantity,
     image,
+    heroImage,
     description,
     price,
     available,

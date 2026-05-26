@@ -39,6 +39,15 @@ export const productSchema = {
       validation: (Rule: any) => Rule.required(),
     },
     {
+      name: 'heroImage',
+      title: 'Hero Section Image (Optional)',
+      type: 'image',
+      description: 'Use a different image for the hero cards. If not set, will use main product image.',
+      options: {
+        hotspot: true,
+      },
+    },
+    {
       name: 'description',
       title: 'Description',
       type: 'text',
@@ -65,6 +74,13 @@ export const productSchema = {
       type: 'boolean',
       description: 'Show in hero section',
       initialValue: false,
+    },
+    {
+      name: 'sortOrder',
+      title: 'Display Order',
+      type: 'number',
+      description: 'Lower numbers appear first (e.g., 1, 2, 3). Leave blank to sort by newest first.',
+      validation: (Rule: any) => Rule.integer().min(0),
     },
   ],
   preview: {
