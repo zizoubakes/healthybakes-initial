@@ -2,13 +2,19 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
+import { getProducts, getSiteSettings, urlFor } from '@/lib/sanity';
 
-export default function Home() {
+export const revalidate = 60; // Revalidate every 60 seconds
+
+export default async function Home() {
+  // Fetch data from Sanity CMS
+  const products = await getProducts();
+  const settings = await getSiteSettings();
   return (
     <>
       {/* Announcement Bar */}
       <div className="announce">
-        ✦ Baked fresh every day in Ashburn, VA • Free local delivery on orders over $35
+        ✦ {settings?.deliveryInfo || 'Order by 8pm · we bake & deliver next day.'}
       </div>
 
       <Navigation />
@@ -115,141 +121,115 @@ export default function Home() {
           </div>
 
           <div className="product-grid">
-            {/* Date & Walnut Mini Cake */}
-            <div className="product">
-              <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
-                <Image
-                  src="/date-walnut-loaf.png"
-                  alt="product photo · date & walnut mini cake"
-                  fill
-                  sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
-                  style={{objectFit: 'cover'}}
-                />
-              </div>
-              <div className="body">
-                <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>1 CAKE</div>
-                <h3>Date & Walnut Mini Cake</h3>
-                <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
-                  Sticky-sweet from medjool dates, never sugar.
-                </p>
-                <div className="price">$30</div>
-              </div>
-            </div>
-
-            {/* Cranberry Lemon Cake */}
-            <div className="product">
-              <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
-                <Image
-                  src="/cranberry-lemon-cake1.png"
-                  alt="product photo · cranberry lemon cake"
-                  fill
-                  sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
-                  style={{objectFit: 'cover'}}
-                />
-              </div>
-              <div className="body">
-                <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>1 CAKE</div>
-                <h3>Cranberry Lemon Cake</h3>
-                <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
-                  Tangy from Lemon and Cranberry all Organic. Minimum sugar.
-                </p>
-                <div className="price">$30</div>
-              </div>
-            </div>
-
-            {/* Blueberry Muffins */}
-            <div className="product">
-              <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
-                <Image
-                  src="/blueberry-muffins.png"
-                  alt="product photo · blueberry muffins"
-                  fill
-                  sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
-                  style={{objectFit: 'cover'}}
-                />
-              </div>
-              <div className="body">
-                <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>12 MUFFINS</div>
-                <h3>Blueberry Muffins</h3>
-                <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
-                  Organic Blueberries with a hint of sugar.
-                </p>
-                <div className="price">$20</div>
-              </div>
-            </div>
-
-            {/* Celebration Cake */}
-            <div className="product">
-              <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
-                <Image
-                  src="/celebration-cake.png"
-                  alt="product photo · celebration cake"
-                  fill
-                  sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
-                  style={{objectFit: 'cover'}}
-                />
-              </div>
-              <div className="body">
-                <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>1 CAKE</div>
-                <h3>Celebration Cake</h3>
-                <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
-                  Rich, moist chocolate cake. Perfect celebration centerpiece.
-                </p>
-                <div className="price">$50</div>
-              </div>
-            </div>
-
-            {/* Apple Cinnamon Cookies */}
-            <div className="product">
-              <div className="ph tint-coral"></div>
-              <div className="body">
-                <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>10 COOKIES</div>
-                <h3>Apple Cinnamon Cookies</h3>
-                <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
-                  Chewy oat cookies sweetened only with fruit.
-                </p>
-                <div className="price">$8</div>
-              </div>
-            </div>
-
-            {/* Almond & Date Bars */}
-            <div className="product">
-              <div className="ph tint-green"></div>
-              <div className="body">
-                <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>6 BARS</div>
-                <h3>Almond & Date Bars</h3>
-                <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
-                  Three ingredients. Zero compromise.
-                </p>
-                <div className="price">$9</div>
-              </div>
-            </div>
-
-            {/* Lunchbox Mini Bites Box */}
-            <div className="product">
-              <div className="ph tint-pink"></div>
-              <div className="body">
-                <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>12 MIXED</div>
-                <h3>Lunchbox Mini Bites Box</h3>
-                <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
-                  A week of snacks, sorted.
-                </p>
-                <div className="price">$12</div>
-              </div>
-            </div>
-
-            {/* Custom Birthday Cake */}
-            <div className="product">
-              <div className="ph tint-pink"></div>
-              <div className="body">
-                <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>FROM $35</div>
-                <h3>Custom Birthday Cake</h3>
-                <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
-                  Tell us their age & favourite fruit — we'll do the rest.
-                </p>
-                <div className="price">$35</div>
-              </div>
-            </div>
+            {products.length > 0 ? (
+              products.map((product) => (
+                <div key={product._id} className="product">
+                  {product.image ? (
+                    <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
+                      <Image
+                        src={urlFor(product.image).width(600).height(600).url()}
+                        alt={`product photo · ${product.name}`}
+                        fill
+                        sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
+                        style={{objectFit: 'cover'}}
+                      />
+                    </div>
+                  ) : (
+                    <div className="ph tint-coral"></div>
+                  )}
+                  <div className="body">
+                    <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>
+                      {product.quantity.toUpperCase()}
+                    </div>
+                    <h3>{product.name}</h3>
+                    <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
+                      {product.description}
+                    </p>
+                    <div className="price">${product.price}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              // Fallback content when Sanity isn't connected yet
+              <>
+                <div className="product">
+                  <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
+                    <Image
+                      src="/date-walnut-loaf.png"
+                      alt="product photo · date & walnut mini cake"
+                      fill
+                      sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
+                      style={{objectFit: 'cover'}}
+                    />
+                  </div>
+                  <div className="body">
+                    <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>1 CAKE</div>
+                    <h3>Date & Walnut Mini Cake</h3>
+                    <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
+                      Sticky-sweet from medjool dates, never sugar.
+                    </p>
+                    <div className="price">$30</div>
+                  </div>
+                </div>
+                <div className="product">
+                  <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
+                    <Image
+                      src="/cranberry-lemon-cake1.png"
+                      alt="product photo · cranberry lemon cake"
+                      fill
+                      sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
+                      style={{objectFit: 'cover'}}
+                    />
+                  </div>
+                  <div className="body">
+                    <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>1 CAKE</div>
+                    <h3>Cranberry Lemon Cake</h3>
+                    <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
+                      Tangy from Lemon and Cranberry all Organic. Minimum sugar.
+                    </p>
+                    <div className="price">$30</div>
+                  </div>
+                </div>
+                <div className="product">
+                  <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
+                    <Image
+                      src="/blueberry-muffins.png"
+                      alt="product photo · blueberry muffins"
+                      fill
+                      sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
+                      style={{objectFit: 'cover'}}
+                    />
+                  </div>
+                  <div className="body">
+                    <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>12 MUFFINS</div>
+                    <h3>Blueberry Muffins</h3>
+                    <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
+                      Organic Blueberries with a hint of sugar.
+                    </p>
+                    <div className="price">$20</div>
+                  </div>
+                </div>
+                <div className="product">
+                  <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
+                    <Image
+                      src="/celebration-cake.png"
+                      alt="product photo · celebration cake"
+                      fill
+                      sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
+                      style={{objectFit: 'cover'}}
+                    />
+                  </div>
+                  <div className="body">
+                    <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>1 CAKE</div>
+                    <h3>Celebration Cake</h3>
+                    <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
+                      Rich, moist chocolate cake. Perfect celebration centerpiece.
+                    </p>
+                    <div className="price">$50</div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -266,7 +246,7 @@ export default function Home() {
               Message us on WhatsApp to place your order or ask any questions. We're here to help!
             </p>
             <a
-              href="https://wa.me/17572771735?text=Hi%20Zizou!%20I'd%20like%20to%20order%20from%20your%20healthy%20bakes"
+              href={`https://wa.me/${settings?.whatsappNumber?.replace(/\+/g, '') || '17572771735'}?text=Hi%20Zizou!%20I'd%20like%20to%20order%20from%20your%20healthy%20bakes`}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-coral"
@@ -304,7 +284,7 @@ export default function Home() {
 
       {/* Floating WhatsApp Button */}
       <a
-        href="https://wa.me/17572771735?text=Hi%20Zizou!%20I'd%20like%20to%20order%20from%20your%20healthy%20bakes"
+        href={`https://wa.me/${settings?.whatsappNumber?.replace(/\+/g, '') || '17572771735'}?text=Hi%20Zizou!%20I'd%20like%20to%20order%20from%20your%20healthy%20bakes`}
         target="_blank"
         rel="noopener noreferrer"
         className="whatsapp-float"

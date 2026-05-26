@@ -1,5 +1,4 @@
-// Sanity Schema for NourishBakes CMS
-// This defines what content your wife can manage
+// Sanity Schema for Zizou's Healthy Bakes CMS
 
 export const productSchema = {
   name: 'product',
@@ -10,6 +9,7 @@ export const productSchema = {
       name: 'name',
       title: 'Product Name',
       type: 'string',
+      description: 'e.g., Date & Walnut Mini Cake',
       validation: (Rule: any) => Rule.required(),
     },
     {
@@ -23,16 +23,10 @@ export const productSchema = {
       validation: (Rule: any) => Rule.required(),
     },
     {
-      name: 'category',
-      title: 'Category',
+      name: 'quantity',
+      title: 'Quantity Label',
       type: 'string',
-      options: {
-        list: [
-          { title: 'For New Moms', value: 'new-moms' },
-          { title: 'For Kids', value: 'kids' },
-          { title: 'For Everyone', value: 'all' },
-        ],
-      },
+      description: 'e.g., "1 CAKE", "12 MUFFINS", "1 SLICE"',
       validation: (Rule: any) => Rule.required(),
     },
     {
@@ -42,33 +36,22 @@ export const productSchema = {
       options: {
         hotspot: true,
       },
+      validation: (Rule: any) => Rule.required(),
     },
     {
       name: 'description',
       title: 'Description',
       type: 'text',
-      rows: 4,
-      validation: (Rule: any) => Rule.required().max(300),
-    },
-    {
-      name: 'ingredients',
-      title: 'Ingredients',
-      type: 'text',
-      rows: 2,
-      validation: (Rule: any) => Rule.required(),
-    },
-    {
-      name: 'benefits',
-      title: 'Key Benefits',
-      type: 'array',
-      of: [{ type: 'string' }],
-      validation: (Rule: any) => Rule.required().min(3).max(6),
+      rows: 3,
+      description: 'Short description for the product card',
+      validation: (Rule: any) => Rule.required().max(150),
     },
     {
       name: 'price',
       title: 'Price',
-      type: 'string',
-      validation: (Rule: any) => Rule.required(),
+      type: 'number',
+      description: 'Price in dollars (no $ symbol)',
+      validation: (Rule: any) => Rule.required().min(0),
     },
     {
       name: 'available',
@@ -76,118 +59,216 @@ export const productSchema = {
       type: 'boolean',
       initialValue: true,
     },
+    {
+      name: 'featured',
+      title: 'Featured Product',
+      type: 'boolean',
+      description: 'Show in hero section',
+      initialValue: false,
+    },
   ],
   preview: {
     select: {
       title: 'name',
-      subtitle: 'category',
+      subtitle: 'quantity',
       media: 'image',
+    },
+    prepare({title, subtitle, media}: any) {
+      return {
+        title,
+        subtitle: `${subtitle}`,
+        media,
+      };
     },
   },
 };
 
-export const blogPostSchema = {
-  name: 'blogPost',
-  title: 'Blog Posts',
+export const orderSchema = {
+  name: 'order',
+  title: 'Orders',
   type: 'document',
   fields: [
     {
-      name: 'title',
-      title: 'Title',
+      name: 'orderNumber',
+      title: 'Order Number',
+      type: 'string',
+      readOnly: true,
+    },
+    {
+      name: 'customerName',
+      title: 'Customer Name',
       type: 'string',
       validation: (Rule: any) => Rule.required(),
     },
     {
-      name: 'slug',
-      title: 'URL Slug',
-      type: 'slug',
-      options: {
-        source: 'title',
-        maxLength: 96,
-      },
+      name: 'phone',
+      title: 'Phone Number',
+      type: 'string',
       validation: (Rule: any) => Rule.required(),
     },
     {
-      name: 'author',
-      title: 'Author',
-      type: 'string',
-      initialValue: 'NourishBakes',
-    },
-    {
-      name: 'publishedAt',
-      title: 'Published Date',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString(),
-    },
-    {
-      name: 'excerpt',
-      title: 'Excerpt',
+      name: 'whatsappMessage',
+      title: 'WhatsApp Message',
       type: 'text',
-      rows: 3,
-      validation: (Rule: any) => Rule.max(200),
+      rows: 5,
+      description: 'Copy the message from WhatsApp',
     },
     {
-      name: 'mainImage',
-      title: 'Main Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-    },
-    {
-      name: 'body',
-      title: 'Body Content',
+      name: 'items',
+      title: 'Order Items',
       type: 'array',
       of: [
         {
-          type: 'block',
-        },
-        {
-          type: 'image',
+          type: 'object',
           fields: [
             {
-              type: 'text',
-              name: 'alt',
-              title: 'Alternative text',
+              name: 'product',
+              title: 'Product',
+              type: 'reference',
+              to: [{type: 'product'}],
+            },
+            {
+              name: 'quantity',
+              title: 'Quantity',
+              type: 'number',
+              validation: (Rule: any) => Rule.required().min(1),
             },
           ],
+          preview: {
+            select: {
+              product: 'product.name',
+              quantity: 'quantity',
+            },
+            prepare({product, quantity}: any) {
+              return {
+                title: `${quantity}x ${product}`,
+              };
+            },
+          },
         },
       ],
+    },
+    {
+      name: 'totalAmount',
+      title: 'Total Amount',
+      type: 'number',
+      description: 'Total in dollars',
+    },
+    {
+      name: 'deliveryAddress',
+      title: 'Delivery Address',
+      type: 'text',
+      rows: 3,
+    },
+    {
+      name: 'deliveryDate',
+      title: 'Delivery Date',
+      type: 'date',
+    },
+    {
+      name: 'status',
+      title: 'Order Status',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'New Order', value: 'new'},
+          {title: 'Confirmed', value: 'confirmed'},
+          {title: 'Baking', value: 'baking'},
+          {title: 'Ready for Delivery', value: 'ready'},
+          {title: 'Delivered', value: 'delivered'},
+          {title: 'Cancelled', value: 'cancelled'},
+        ],
+      },
+      initialValue: 'new',
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'notes',
+      title: 'Notes',
+      type: 'text',
+      rows: 3,
+      description: 'Internal notes about the order',
+    },
+    {
+      name: 'createdAt',
+      title: 'Order Date',
+      type: 'datetime',
+      readOnly: true,
+      initialValue: () => new Date().toISOString(),
     },
   ],
   preview: {
     select: {
-      title: 'title',
-      media: 'mainImage',
+      customerName: 'customerName',
+      orderNumber: 'orderNumber',
+      status: 'status',
+      total: 'totalAmount',
+    },
+    prepare({customerName, orderNumber, status, total}: any) {
+      return {
+        title: `${orderNumber} - ${customerName}`,
+        subtitle: `${status} • $${total}`,
+      };
     },
   },
 };
 
-export const aboutPageSchema = {
-  name: 'aboutPage',
-  title: 'About Page',
+export const siteSettingsSchema = {
+  name: 'siteSettings',
+  title: 'Site Settings',
   type: 'document',
   fields: [
     {
-      name: 'ownerName',
-      title: 'Your Name',
+      name: 'storeName',
+      title: 'Store Name',
       type: 'string',
+      initialValue: "Zizou's Healthy Bakes",
     },
     {
-      name: 'ownerPhoto',
-      title: 'Your Photo',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
+      name: 'tagline',
+      title: 'Tagline',
+      type: 'string',
+      initialValue: 'Organic · Handmade · Mom-approved',
     },
     {
-      name: 'story',
-      title: 'Your Story',
+      name: 'heroHeadline',
+      title: 'Hero Headline',
+      type: 'text',
+      rows: 2,
+    },
+    {
+      name: 'heroSubtitle',
+      title: 'Hero Subtitle',
+      type: 'text',
+      rows: 2,
+    },
+    {
+      name: 'aboutStory',
+      title: 'About Story',
       type: 'array',
-      of: [{ type: 'block' }],
+      of: [{type: 'block'}],
+    },
+    {
+      name: 'whatsappNumber',
+      title: 'WhatsApp Number',
+      type: 'string',
+      description: 'Include country code (e.g., +17572771735)',
+      initialValue: '+17572771735',
+    },
+    {
+      name: 'instagramHandle',
+      title: 'Instagram Handle',
+      type: 'string',
+      description: 'Without @ symbol',
+    },
+    {
+      name: 'deliveryInfo',
+      title: 'Delivery Information',
+      type: 'text',
+      rows: 2,
+      initialValue: 'Order by 8pm · we bake & deliver next day.',
     },
   ],
 };
 
-export const schemas = [productSchema, blogPostSchema, aboutPageSchema];
+export const schemas = [productSchema, orderSchema, siteSettingsSchema];
