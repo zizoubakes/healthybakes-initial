@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
+import ImageLightbox from './components/ImageLightbox';
 import { getProducts, getSiteSettings, getFeaturedProducts, urlFor } from '@/lib/sanity';
 
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -53,19 +54,22 @@ export default async function Home() {
                   {featuredProducts.slice(0, 3).map((product, index) => {
                     // Use hero image if available, otherwise fall back to regular image
                     const displayImage = product.heroImage || product.image;
+                    const largeImageUrl = displayImage ? urlFor(displayImage).width(800).height(800).url() : '';
 
                     return (
                       <div key={product._id} className={`hero-card c${index + 1}`}>
                         {displayImage ? (
-                          <div style={{position: 'relative', width: '100%', height: '180px', overflow: 'hidden', borderRadius: '12px 12px 0 0', marginBottom: '10px'}}>
-                            <Image
-                              src={urlFor(displayImage).width(300).height(300).url()}
-                              alt={product.name}
-                              fill
-                              sizes="240px"
-                              style={{objectFit: 'cover'}}
-                            />
-                          </div>
+                          <ImageLightbox imageUrl={largeImageUrl} imageName={product.name}>
+                            <div style={{position: 'relative', width: '100%', height: '180px', overflow: 'hidden', borderRadius: '12px 12px 0 0', marginBottom: '10px'}}>
+                              <Image
+                                src={urlFor(displayImage).width(300).height(300).url()}
+                                alt={product.name}
+                                fill
+                                sizes="240px"
+                                style={{objectFit: 'cover'}}
+                              />
+                            </div>
+                          </ImageLightbox>
                         ) : (
                           <div className="ph tint-coral"></div>
                         )}
@@ -156,46 +160,54 @@ export default async function Home() {
 
           <div className="product-grid">
             {products.length > 0 ? (
-              products.map((product) => (
-                <div key={product._id} className="product">
-                  {product.image ? (
+              products.map((product) => {
+                const largeImageUrl = product.image ? urlFor(product.image).width(1200).height(1200).url() : '';
+
+                return (
+                  <div key={product._id} className="product">
+                    {product.image ? (
+                      <ImageLightbox imageUrl={largeImageUrl} imageName={product.name}>
+                        <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
+                          <Image
+                            src={urlFor(product.image).width(600).height(600).url()}
+                            alt={`product photo · ${product.name}`}
+                            fill
+                            sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
+                            style={{objectFit: 'cover'}}
+                          />
+                        </div>
+                      </ImageLightbox>
+                    ) : (
+                      <div className="ph tint-coral"></div>
+                    )}
+                    <div className="body">
+                      <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>
+                        {product.quantity.toUpperCase()}
+                      </div>
+                      <h3>{product.name}</h3>
+                      <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
+                        {product.description}
+                      </p>
+                      <div className="price">${product.price}</div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              // Fallback content when Sanity isn't connected yet
+              <>
+                <div className="product">
+                  <ImageLightbox imageUrl="/date-walnut-loaf.png" imageName="Date & Walnut Mini Cake">
                     <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
                       <Image
-                        src={urlFor(product.image).width(600).height(600).url()}
-                        alt={`product photo · ${product.name}`}
+                        src="/date-walnut-loaf.png"
+                        alt="product photo · date & walnut mini cake"
                         fill
                         sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
                         style={{objectFit: 'cover'}}
                       />
                     </div>
-                  ) : (
-                    <div className="ph tint-coral"></div>
-                  )}
-                  <div className="body">
-                    <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>
-                      {product.quantity.toUpperCase()}
-                    </div>
-                    <h3>{product.name}</h3>
-                    <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
-                      {product.description}
-                    </p>
-                    <div className="price">${product.price}</div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              // Fallback content when Sanity isn't connected yet
-              <>
-                <div className="product">
-                  <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
-                    <Image
-                      src="/date-walnut-loaf.png"
-                      alt="product photo · date & walnut mini cake"
-                      fill
-                      sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
-                      style={{objectFit: 'cover'}}
-                    />
-                  </div>
+                  </ImageLightbox>
                   <div className="body">
                     <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>1 CAKE</div>
                     <h3>Date & Walnut Mini Cake</h3>
@@ -206,15 +218,17 @@ export default async function Home() {
                   </div>
                 </div>
                 <div className="product">
-                  <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
-                    <Image
-                      src="/cranberry-lemon-cake1.png"
-                      alt="product photo · cranberry lemon cake"
-                      fill
-                      sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
-                      style={{objectFit: 'cover'}}
-                    />
-                  </div>
+                  <ImageLightbox imageUrl="/cranberry-lemon-cake1.png" imageName="Cranberry Lemon Cake">
+                    <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
+                      <Image
+                        src="/cranberry-lemon-cake1.png"
+                        alt="product photo · cranberry lemon cake"
+                        fill
+                        sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
+                        style={{objectFit: 'cover'}}
+                      />
+                    </div>
+                  </ImageLightbox>
                   <div className="body">
                     <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>1 CAKE</div>
                     <h3>Cranberry Lemon Cake</h3>
@@ -225,15 +239,17 @@ export default async function Home() {
                   </div>
                 </div>
                 <div className="product">
-                  <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
-                    <Image
-                      src="/blueberry-muffins.png"
-                      alt="product photo · blueberry muffins"
-                      fill
-                      sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
-                      style={{objectFit: 'cover'}}
-                    />
-                  </div>
+                  <ImageLightbox imageUrl="/blueberry-muffins.png" imageName="Blueberry Muffins">
+                    <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
+                      <Image
+                        src="/blueberry-muffins.png"
+                        alt="product photo · blueberry muffins"
+                        fill
+                        sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
+                        style={{objectFit: 'cover'}}
+                      />
+                    </div>
+                  </ImageLightbox>
                   <div className="body">
                     <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>12 MUFFINS</div>
                     <h3>Blueberry Muffins</h3>
@@ -244,15 +260,17 @@ export default async function Home() {
                   </div>
                 </div>
                 <div className="product">
-                  <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
-                    <Image
-                      src="/celebration-cake.png"
-                      alt="product photo · celebration cake"
-                      fill
-                      sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
-                      style={{objectFit: 'cover'}}
-                    />
-                  </div>
+                  <ImageLightbox imageUrl="/celebration-cake.png" imageName="Celebration Cake">
+                    <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
+                      <Image
+                        src="/celebration-cake.png"
+                        alt="product photo · celebration cake"
+                        fill
+                        sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
+                        style={{objectFit: 'cover'}}
+                      />
+                    </div>
+                  </ImageLightbox>
                   <div className="body">
                     <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>1 CAKE</div>
                     <h3>Celebration Cake</h3>
