@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 
 interface ImageLightboxProps {
@@ -11,40 +12,44 @@ interface ImageLightboxProps {
 
 export default function ImageLightbox({ children, imageUrl, imageName }: ImageLightboxProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  return (
-    <>
-      <div onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }}>
-        {children}
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
+  const lightboxContent = isOpen ? (
+    <div
+      className="lightbox-overlay"
+      onClick={handleClose}
+    >
+      <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+        <button
+          className="lightbox-close"
+          onClick={handleClose}
+          aria-label="Close image viewer"
+        >
+          ✕
+        </button>
+        <div className="lightbox-image-container">
+          <Image
+            src={imageUrl}
+            alt={imageName}
+            fill
+            sizes="90vw"
+            style={{objectFit: 'contain'}}
+            priority
+          />
+        </div>
+        <div className="lightbox-caption">{imageName}</div>
       </div>
 
-      {isOpen && (
-        <div
-          className="lightbox-overlay"
-          onClick={() => setIsOpen(false)}
-        >
-          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="lightbox-close"
-              onClick={() => setIsOpen(false)}
-              aria-label="Close image viewer"
-            >
-              ✕
-            </button>
-            <div className="lightbox-image-container">
-              <Image
-                src={imageUrl}
-                alt={imageName}
-                fill
-                sizes="90vw"
-                style={{objectFit: 'contain'}}
-                priority
-              />
-            </div>
-            <div className="lightbox-caption">{imageName}</div>
-          </div>
-
-          <style jsx global>{`
+      <style jsx global>{`
             .lightbox-overlay {
               position: fixed;
               top: 0;
@@ -131,9 +136,16 @@ export default function ImageLightbox({ children, imageUrl, imageName }: ImageLi
                 font-size: 16px;
               }
             }
-          `}</style>
-        </div>
-      )}
+      `}</style>
+    </div>
+  ) : null;
+
+  return (
+    <>
+      <div onClick={() => setIsOpen(true)} style={{ cursor: 'pointer' }}>
+        {children}
+      </div>
+      {mounted && lightboxContent && createPortal(lightboxContent, document.body)}
     </>
   );
 }
