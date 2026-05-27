@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import ImageLightbox from './components/ImageLightbox';
+import StorySection from './components/StorySection';
 import { getProducts, getSiteSettings, getFeaturedProducts, urlFor } from '@/lib/sanity';
 
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -318,16 +319,7 @@ export default async function Home() {
         <div className="container">
           <div style={{maxWidth: '800px', margin: '0 auto', textAlign: 'center'}}>
             <span className="kicker">Our story</span>
-            <h2 style={{fontFamily: 'var(--font-fredoka)', fontSize: 'clamp(32px, 3.6vw, 48px)', margin: '0 0 24px'}}>
-              I started baking because <span className="script" style={{color: 'var(--coral)', fontStyle: 'italic'}}>my kids deserved better.</span>
-            </h2>
-            <p style={{fontSize: '18px', lineHeight: 1.6, marginBottom: '16px', color: 'var(--ink-soft)'}}>
-              I'm Zizou — mom of two, lifelong baker, and unwilling reader of every snack ingredient label in Sainsbury's. After one too many "natural" muffins with five kinds of sugar, I started baking my own.
-            </p>
-            <p style={{fontSize: '18px', lineHeight: 1.6, marginBottom: '24px', color: 'var(--ink-soft)'}}>
-              Then friends asked. Then their friends asked. So here we are — handmade bakes for moms who care, made with dates, oats, nuts and a lot of love.
-            </p>
-            <p className="script" style={{fontSize: '24px', color: 'var(--coral)'}}>— Zizou ✿</p>
+            <StorySection aboutStory={settings?.aboutStory} />
           </div>
         </div>
       </section>
