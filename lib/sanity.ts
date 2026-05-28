@@ -56,6 +56,8 @@ export interface SiteSettings {
   contactHeading: string
   contactDescription: string
   aboutStory: any[]
+  customCakesHeading: string
+  customCakesContent: any[]
   trustItems: TrustItem[]
   navigationLinks: NavigationLink[]
   whatsappNumber: string
@@ -121,6 +123,8 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
     contactHeading,
     contactDescription,
     aboutStory,
+    customCakesHeading,
+    customCakesContent,
     trustItems,
     navigationLinks[] {
       label,

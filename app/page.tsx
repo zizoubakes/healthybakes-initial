@@ -303,6 +303,19 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Custom Cakes Section */}
+      <section className="section" id="custom" style={{background: 'var(--bg-2)'}}>
+        <div className="container">
+          <div style={{maxWidth: '800px', margin: '0 auto', textAlign: 'center'}}>
+            <span className="kicker">Make it yours</span>
+            <h2 style={{fontFamily: 'var(--font-fredoka)', fontSize: 'clamp(32px, 3.6vw, 48px)', margin: '0 0 24px'}}>
+              {settings?.customCakesHeading || 'Custom Cakes'}
+            </h2>
+            <StorySection aboutStory={settings?.customCakesContent} />
+          </div>
+        </div>
+      </section>
+
       {/* Dynamic Sections from Navigation Links */}
       {settings?.navigationLinks && settings.navigationLinks
         .filter(link => link.url.startsWith('#') && link.sectionContent && link.sectionContent.length > 0)
