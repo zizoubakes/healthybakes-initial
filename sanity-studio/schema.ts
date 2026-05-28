@@ -33,10 +33,10 @@ export const productSchema = {
       name: 'image',
       title: 'Product Image',
       type: 'image',
+      description: 'Main product image (optional)',
       options: {
         hotspot: true,
       },
-      validation: (Rule: any) => Rule.required(),
     },
     {
       name: 'heroImage',
