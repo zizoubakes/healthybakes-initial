@@ -265,19 +265,6 @@ export const siteSettingsSchema = {
       of: [{type: 'block'}],
     },
     {
-      name: 'howItWorksHeading',
-      title: 'How It Works - Heading',
-      type: 'string',
-      initialValue: 'How it works',
-    },
-    {
-      name: 'howItWorksContent',
-      title: 'How It Works - Content',
-      type: 'array',
-      description: 'Rich text content explaining how ordering works',
-      of: [{type: 'block'}],
-    },
-    {
       name: 'whatsappNumber',
       title: 'WhatsApp Number',
       type: 'string',
@@ -371,7 +358,7 @@ export const siteSettingsSchema = {
       name: 'navigationLinks',
       title: 'Navigation Links',
       type: 'array',
-      description: 'Links in the main navigation menu',
+      description: 'Links in the main navigation menu. For hash links (#how), you can add section content below.',
       of: [
         {
           type: 'object',
@@ -387,19 +374,33 @@ export const siteSettingsSchema = {
               name: 'url',
               title: 'Link URL',
               type: 'string',
-              description: 'Use #shop for same-page links, or full URL like https://example.com',
+              description: 'Use #how for same-page links, or full URL like https://example.com',
               validation: (Rule: any) => Rule.required(),
+            },
+            {
+              name: 'sectionHeading',
+              title: 'Section Heading (Optional)',
+              type: 'string',
+              description: 'If this is a hash link (#how), enter the heading for this section',
+            },
+            {
+              name: 'sectionContent',
+              title: 'Section Content (Optional)',
+              type: 'array',
+              description: 'If this is a hash link (#how), enter the content for this section',
+              of: [{type: 'block'}],
             },
           ],
           preview: {
             select: {
               label: 'label',
               url: 'url',
+              hasContent: 'sectionContent',
             },
-            prepare({label, url}: any) {
+            prepare({label, url, hasContent}: any) {
               return {
                 title: label,
-                subtitle: url,
+                subtitle: `${url}${hasContent && hasContent.length > 0 ? ' (has content)' : ''}`,
               };
             },
           },
