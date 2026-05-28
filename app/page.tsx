@@ -303,6 +303,19 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* How It Works Section */}
+      <section className="section" id="how" style={{background: 'var(--bg-2)'}}>
+        <div className="container">
+          <div style={{maxWidth: '800px', margin: '0 auto', textAlign: 'center'}}>
+            <span className="kicker">Simple process</span>
+            <h2 style={{fontFamily: 'var(--font-fredoka)', fontSize: 'clamp(32px, 3.6vw, 48px)', margin: '0 0 24px'}}>
+              {settings?.howItWorksHeading || 'How it works'}
+            </h2>
+            <StorySection aboutStory={settings?.howItWorksContent} />
+          </div>
+        </div>
+      </section>
+
       {/* Contact Section */}
       <section className="section" id="contact" style={{background: 'var(--paper)'}}>
         <div className="container">

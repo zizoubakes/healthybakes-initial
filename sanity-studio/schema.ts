@@ -265,6 +265,19 @@ export const siteSettingsSchema = {
       of: [{type: 'block'}],
     },
     {
+      name: 'howItWorksHeading',
+      title: 'How It Works - Heading',
+      type: 'string',
+      initialValue: 'How it works',
+    },
+    {
+      name: 'howItWorksContent',
+      title: 'How It Works - Content',
+      type: 'array',
+      description: 'Rich text content explaining how ordering works',
+      of: [{type: 'block'}],
+    },
+    {
       name: 'whatsappNumber',
       title: 'WhatsApp Number',
       type: 'string',
