@@ -284,6 +284,76 @@ export const siteSettingsSchema = {
       rows: 2,
       initialValue: 'Order by 8pm · we bake & deliver next day.',
     },
+    {
+      name: 'heroRating',
+      title: 'Hero Rating Text',
+      type: 'string',
+      description: 'Text shown below the hero buttons',
+      initialValue: 'Loved by 200+ Northern VA families',
+    },
+    {
+      name: 'shopHeading',
+      title: 'Shop Section Heading',
+      type: 'string',
+      initialValue: 'Always Fresh —',
+    },
+    {
+      name: 'contactHeading',
+      title: 'Contact Section Heading',
+      type: 'string',
+      initialValue: 'Ready to order?',
+    },
+    {
+      name: 'contactDescription',
+      title: 'Contact Section Description',
+      type: 'text',
+      rows: 2,
+      initialValue: 'Message us on WhatsApp to place your order or ask any questions. We\'re here to help!',
+    },
+    {
+      name: 'trustItems',
+      title: 'Trust Strip Items',
+      type: 'array',
+      description: 'The 4 trust indicators shown below the hero',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'emoji',
+              title: 'Emoji Icon',
+              type: 'string',
+              description: 'Single emoji (e.g., 🍯, 🌱, 🥣, 💗)',
+              validation: (Rule: any) => Rule.required(),
+            },
+            {
+              name: 'title',
+              title: 'Title',
+              type: 'string',
+              validation: (Rule: any) => Rule.required(),
+            },
+            {
+              name: 'description',
+              title: 'Description',
+              type: 'string',
+              validation: (Rule: any) => Rule.required(),
+            },
+          ],
+          preview: {
+            select: {
+              title: 'title',
+              emoji: 'emoji',
+            },
+            prepare({title, emoji}: any) {
+              return {
+                title: `${emoji} ${title}`,
+              };
+            },
+          },
+        },
+      ],
+      validation: (Rule: any) => Rule.max(4),
+    },
   ],
 };
 

@@ -32,13 +32,24 @@ export interface Product {
   featured: boolean
 }
 
+export interface TrustItem {
+  emoji: string
+  title: string
+  description: string
+}
+
 export interface SiteSettings {
   _id: string
   storeName: string
   tagline: string
   heroHeadline: string
   heroSubtitle: string
+  heroRating: string
+  shopHeading: string
+  contactHeading: string
+  contactDescription: string
   aboutStory: any[]
+  trustItems: TrustItem[]
   whatsappNumber: string
   instagramHandle?: string
   deliveryInfo: string
@@ -97,7 +108,12 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
     tagline,
     heroHeadline,
     heroSubtitle,
+    heroRating,
+    shopHeading,
+    contactHeading,
+    contactDescription,
     aboutStory,
+    trustItems,
     whatsappNumber,
     instagramHandle,
     deliveryInfo

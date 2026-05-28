@@ -27,19 +27,21 @@ export default async function Home() {
         <div className="container">
           <div className="hero-grid">
             <div>
-              <div className="hero-eyebrow">Organic · Handmade · Mom-approved</div>
+              <div className="hero-eyebrow">{settings?.tagline || 'Organic · Handmade · Mom-approved'}</div>
               <h1>
-                Real ingredients. <span className="wob green">happy</span> kids. Hidden <span className="wob"><u>sweetness</u></span>.
+                {settings?.heroHeadline || (
+                  <>Real ingredients. <span className="wob green">happy</span> kids. Hidden <span className="wob"><u>sweetness</u></span>.</>
+                )}
               </h1>
               <p className="hero-sub">
-                Handmade, organic, reduced-sugar bakes made by a mom who reads every label so you don't have to.
+                {settings?.heroSubtitle || 'Handmade, organic, reduced-sugar bakes made by a mom who reads every label so you don\'t have to.'}
               </p>
               <div className="hero-ctas">
                 <Link href="#shop" className="btn btn-coral">Shop the bakes</Link>
                 <Link href="#story" className="btn btn-ghost">Meet Zizou</Link>
                 <div className="hero-rating">
                   <span className="stars">★★★★★</span>
-                  Loved by 200+ Northern VA families
+                  {settings?.heroRating || 'Loved by 200+ Northern VA families'}
                 </div>
               </div>
             </div>
@@ -114,34 +116,48 @@ export default async function Home() {
       <section className="trust">
         <div className="container">
           <div className="trust-inner">
-            <div className="trust-item">
-              <div className="trust-ico">🍯</div>
-              <div>
-                <h4>No refined sugar</h4>
-                <p>Sweetened with dates & fruit</p>
-              </div>
-            </div>
-            <div className="trust-item">
-              <div className="trust-ico">🌱</div>
-              <div>
-                <h4>100% organic</h4>
-                <p>Flour, fruit, nuts — all of it</p>
-              </div>
-            </div>
-            <div className="trust-item">
-              <div className="trust-ico">🥣</div>
-              <div>
-                <h4>Handmade daily</h4>
-                <p>Small batches, never frozen</p>
-              </div>
-            </div>
-            <div className="trust-item">
-              <div className="trust-ico">💗</div>
-              <div>
-                <h4>Mom-led recipes</h4>
-                <p>Born in our home kitchen</p>
-              </div>
-            </div>
+            {settings?.trustItems && settings.trustItems.length > 0 ? (
+              settings.trustItems.map((item, index) => (
+                <div key={index} className="trust-item">
+                  <div className="trust-ico">{item.emoji}</div>
+                  <div>
+                    <h4>{item.title}</h4>
+                    <p>{item.description}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <>
+                <div className="trust-item">
+                  <div className="trust-ico">🍯</div>
+                  <div>
+                    <h4>No refined sugar</h4>
+                    <p>Sweetened with dates & fruit</p>
+                  </div>
+                </div>
+                <div className="trust-item">
+                  <div className="trust-ico">🌱</div>
+                  <div>
+                    <h4>100% organic</h4>
+                    <p>Flour, fruit, nuts — all of it</p>
+                  </div>
+                </div>
+                <div className="trust-item">
+                  <div className="trust-ico">🥣</div>
+                  <div>
+                    <h4>Handmade daily</h4>
+                    <p>Small batches, never frozen</p>
+                  </div>
+                </div>
+                <div className="trust-item">
+                  <div className="trust-ico">💗</div>
+                  <div>
+                    <h4>Mom-led recipes</h4>
+                    <p>Born in our home kitchen</p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -152,9 +168,9 @@ export default async function Home() {
           <div className="section-head">
             <div>
               <span className="kicker">The bake list</span>
-              <h2>Always Fresh —</h2>
+              <h2>{settings?.shopHeading || 'Always Fresh —'}</h2>
               <p style={{margin: 0, fontSize: '15px', color: 'var(--ink-soft)', fontWeight: 600}}>
-                Order by 8pm · we bake & deliver next day.
+                {settings?.deliveryInfo || 'Order by 8pm · we bake & deliver next day.'}
               </p>
             </div>
           </div>
@@ -293,10 +309,10 @@ export default async function Home() {
           <div style={{maxWidth: '700px', margin: '0 auto', textAlign: 'center'}}>
             <span className="kicker">Get in touch</span>
             <h2 style={{fontFamily: 'var(--font-fredoka)', fontSize: 'clamp(32px, 3.6vw, 48px)', margin: '0 0 16px'}}>
-              Ready to order?
+              {settings?.contactHeading || 'Ready to order?'}
             </h2>
             <p style={{fontSize: '18px', lineHeight: 1.6, marginBottom: '32px', color: 'var(--ink-soft)'}}>
-              Message us on WhatsApp to place your order or ask any questions. We're here to help!
+              {settings?.contactDescription || 'Message us on WhatsApp to place your order or ask any questions. We\'re here to help!'}
             </p>
             <a
               href={`https://wa.me/${settings?.whatsappNumber?.replace(/\+/g, '') || '17572771735'}?text=Hi%20Zizou!%20I'd%20like%20to%20order%20from%20your%20healthy%20bakes`}
