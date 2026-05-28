@@ -2,7 +2,26 @@
 
 import Link from 'next/link';
 
-export default function Navigation() {
+interface NavigationLink {
+  label: string
+  url: string
+}
+
+interface NavigationProps {
+  navigationLinks?: NavigationLink[]
+}
+
+export default function Navigation({ navigationLinks }: NavigationProps) {
+  // Default links if none provided from Sanity
+  const defaultLinks = [
+    { label: 'Shop', url: '#shop' },
+    { label: 'Custom cakes', url: '#custom' },
+    { label: 'Our story', url: '#story' },
+    { label: 'How it works', url: '#how' },
+  ];
+
+  const links = navigationLinks && navigationLinks.length > 0 ? navigationLinks : defaultLinks;
+
   return (
     <nav className="nav">
       <div className="nav-inner container">
@@ -15,10 +34,16 @@ export default function Navigation() {
         </Link>
 
         <div className="nav-links">
-          <a href="#shop">Shop</a>
-          <a href="#custom">Custom cakes</a>
-          <a href="#story">Our story</a>
-          <a href="#how">How it works</a>
+          {links.map((link, index) => (
+            <a
+              key={index}
+              href={link.url}
+              target={link.url.startsWith('http') ? '_blank' : undefined}
+              rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+            >
+              {link.label}
+            </a>
+          ))}
         </div>
       </div>
     </nav>

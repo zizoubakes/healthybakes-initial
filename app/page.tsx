@@ -20,7 +20,7 @@ export default async function Home() {
         ✦ {settings?.deliveryInfo || 'Order by 8pm · we bake & deliver next day.'}
       </div>
 
-      <Navigation />
+      <Navigation navigationLinks={settings?.navigationLinks} />
 
       {/* Hero Section */}
       <section className="hero">

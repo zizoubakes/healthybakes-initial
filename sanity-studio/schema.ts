@@ -354,6 +354,46 @@ export const siteSettingsSchema = {
       ],
       validation: (Rule: any) => Rule.max(4),
     },
+    {
+      name: 'navigationLinks',
+      title: 'Navigation Links',
+      type: 'array',
+      description: 'Links in the main navigation menu',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'label',
+              title: 'Link Label',
+              type: 'string',
+              description: 'Text to display (e.g., "Shop", "How it works")',
+              validation: (Rule: any) => Rule.required(),
+            },
+            {
+              name: 'url',
+              title: 'Link URL',
+              type: 'string',
+              description: 'Use #shop for same-page links, or full URL like https://example.com',
+              validation: (Rule: any) => Rule.required(),
+            },
+          ],
+          preview: {
+            select: {
+              label: 'label',
+              url: 'url',
+            },
+            prepare({label, url}: any) {
+              return {
+                title: label,
+                subtitle: url,
+              };
+            },
+          },
+        },
+      ],
+      validation: (Rule: any) => Rule.max(6),
+    },
   ],
 };
 

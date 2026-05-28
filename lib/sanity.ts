@@ -38,6 +38,11 @@ export interface TrustItem {
   description: string
 }
 
+export interface NavigationLink {
+  label: string
+  url: string
+}
+
 export interface SiteSettings {
   _id: string
   storeName: string
@@ -50,6 +55,7 @@ export interface SiteSettings {
   contactDescription: string
   aboutStory: any[]
   trustItems: TrustItem[]
+  navigationLinks: NavigationLink[]
   whatsappNumber: string
   instagramHandle?: string
   deliveryInfo: string
@@ -114,6 +120,7 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
     contactDescription,
     aboutStory,
     trustItems,
+    navigationLinks,
     whatsappNumber,
     instagramHandle,
     deliveryInfo
