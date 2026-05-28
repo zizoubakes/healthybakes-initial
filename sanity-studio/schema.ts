@@ -265,19 +265,6 @@ export const siteSettingsSchema = {
       of: [{type: 'block'}],
     },
     {
-      name: 'customCakesHeading',
-      title: 'Custom Cakes - Heading',
-      type: 'string',
-      initialValue: 'Custom Cakes',
-    },
-    {
-      name: 'customCakesContent',
-      title: 'Custom Cakes - Content',
-      type: 'array',
-      description: 'Information about your custom cake service',
-      of: [{type: 'block'}],
-    },
-    {
       name: 'whatsappNumber',
       title: 'WhatsApp Number',
       type: 'string',
