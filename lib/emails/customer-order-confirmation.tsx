@@ -79,9 +79,10 @@ export const CustomerOrderConfirmation = ({
 
           <Hr style={hr} />
 
-          <Section style={totalSection}>
-            <Text style={totalLabel}>Total:</Text>
-            <Text style={totalAmount}>${totalAmount.toFixed(2)}</Text>
+          <Section style={totalSectionContainer}>
+            <Text style={totalText}>
+              <strong>Total:</strong> ${totalAmount.toFixed(2)}
+            </Text>
           </Section>
 
           <Hr style={hr} />
@@ -207,27 +208,16 @@ const itemDetails = {
   margin: '0',
 };
 
-const totalSection = {
-  padding: '0 40px',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
+const totalSectionContainer = {
+  padding: '10px 40px',
+  backgroundColor: '#f9fafb',
 };
 
-const totalLabel = {
-  color: '#333',
-  fontSize: '18px',
-  fontWeight: 'bold',
-  margin: '0',
-  display: 'inline-block',
-};
-
-const totalAmount = {
+const totalText = {
   color: '#FF6B6B',
-  fontSize: '24px',
-  fontWeight: 'bold',
+  fontSize: '20px',
   margin: '0',
-  display: 'inline-block',
+  textAlign: 'center' as const,
 };
 
 const infoSection = {

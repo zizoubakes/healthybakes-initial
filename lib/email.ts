@@ -4,7 +4,13 @@ import CustomerOrderConfirmation from './emails/customer-order-confirmation';
 import OwnerOrderNotification from './emails/owner-order-notification';
 import { OrderItem } from './sanity';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend only if API key is available
+const getResendClient = () => {
+  if (!process.env.RESEND_API_KEY) {
+    return null;
+  }
+  return new Resend(process.env.RESEND_API_KEY);
+};
 
 interface SendOrderEmailsParams {
   customerName: string;
@@ -54,8 +60,11 @@ export async function sendOrderEmails(params: SendOrderEmailsParams) {
     return results;
   }
 
+  // Get Resend client
+  const resend = getResendClient();
+
   // Don't send emails if Resend API key is not configured
-  if (!process.env.RESEND_API_KEY) {
+  if (!resend) {
     console.log('RESEND_API_KEY is not configured');
     results.customerEmail.error = 'Email service not configured';
     results.ownerEmails.error = 'Email service not configured';
