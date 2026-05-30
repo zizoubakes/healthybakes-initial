@@ -1,6 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
+import CartButton from './CartButton';
+import CartModal from './CartModal';
 
 interface NavigationLink {
   label: string
@@ -12,6 +15,7 @@ interface NavigationProps {
 }
 
 export default function Navigation({ navigationLinks }: NavigationProps) {
+  const [isCartOpen, setIsCartOpen] = useState(false);
   // Default links if none provided from Sanity
   const defaultLinks = [
     { label: 'Shop', url: '#shop' },
@@ -23,29 +27,33 @@ export default function Navigation({ navigationLinks }: NavigationProps) {
   const links = navigationLinks && navigationLinks.length > 0 ? navigationLinks : defaultLinks;
 
   return (
-    <nav className="nav">
-      <div className="nav-inner container">
-        <Link href="/" className="logo">
-          <div className="logo-mark">Z</div>
-          <div className="logo-text">
-            Zizou's
-            <small>healthy bakes ✿</small>
-          </div>
-        </Link>
+    <>
+      <nav className="nav">
+        <div className="nav-inner container">
+          <Link href="/" className="logo">
+            <div className="logo-mark">Z</div>
+            <div className="logo-text">
+              Zizou's
+              <small>healthy bakes ✿</small>
+            </div>
+          </Link>
 
-        <div className="nav-links">
-          {links.map((link, index) => (
-            <a
-              key={index}
-              href={link.url}
-              target={link.url.startsWith('http') ? '_blank' : undefined}
-              rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-            >
-              {link.label}
-            </a>
-          ))}
+          <div className="nav-links">
+            {links.map((link, index) => (
+              <a
+                key={index}
+                href={link.url}
+                target={link.url.startsWith('http') ? '_blank' : undefined}
+                rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >
+                {link.label}
+              </a>
+            ))}
+            <CartButton onClick={() => setIsCartOpen(true)} />
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+    </>
   );
 }

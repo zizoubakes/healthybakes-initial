@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito, Fredoka, Caveat } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "./context/CartContext";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -73,7 +74,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${nunito.variable} ${fredoka.variable} ${caveat.variable}`}>
-      <body className={nunito.className}>{children}</body>
+      <body className={nunito.className}>
+        <CartProvider>{children}</CartProvider>
+      </body>
     </html>
   );
 }

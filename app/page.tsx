@@ -4,6 +4,7 @@ import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import ImageLightbox from './components/ImageLightbox';
 import StorySection from './components/StorySection';
+import ProductCard from './components/ProductCard';
 import { getProducts, getSiteSettings, getFeaturedProducts, urlFor } from '@/lib/sanity';
 
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -177,39 +178,9 @@ export default async function Home() {
 
           <div className="product-grid">
             {products.length > 0 ? (
-              products.map((product) => {
-                const largeImageUrl = product.image ? urlFor(product.image).width(1200).height(1200).url() : '';
-
-                return (
-                  <div key={product._id} className="product">
-                    {product.image ? (
-                      <ImageLightbox imageUrl={largeImageUrl} imageName={product.name}>
-                        <div style={{position: 'relative', aspectRatio: '1/1', overflow: 'hidden', borderRadius: '28px 28px 0 0'}}>
-                          <Image
-                            src={urlFor(product.image).width(600).height(600).url()}
-                            alt={`product photo · ${product.name}`}
-                            fill
-                            sizes="(max-width: 720px) 50vw, (max-width: 1040px) 33vw, 25vw"
-                            style={{objectFit: 'cover'}}
-                          />
-                        </div>
-                      </ImageLightbox>
-                    ) : (
-                      <div className="ph tint-coral"></div>
-                    )}
-                    <div className="body">
-                      <div style={{fontSize: '12px', fontWeight: 700, color: 'var(--ink-soft)', marginBottom: '4px'}}>
-                        {product.quantity.toUpperCase()}
-                      </div>
-                      <h3>{product.name}</h3>
-                      <p style={{fontSize: '14px', color: 'var(--ink-soft)', margin: '0 0 12px'}}>
-                        {product.description}
-                      </p>
-                      <div className="price">${product.price}</div>
-                    </div>
-                  </div>
-                );
-              })
+              products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))
             ) : (
               // Fallback content when Sanity isn't connected yet
               <>

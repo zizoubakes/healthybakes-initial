@@ -117,17 +117,10 @@ export const orderSchema = {
       validation: (Rule: any) => Rule.required(),
     },
     {
-      name: 'phone',
-      title: 'Phone Number',
+      name: 'email',
+      title: 'Email Address',
       type: 'string',
-      validation: (Rule: any) => Rule.required(),
-    },
-    {
-      name: 'whatsappMessage',
-      title: 'WhatsApp Message',
-      type: 'text',
-      rows: 5,
-      description: 'Copy the message from WhatsApp',
+      validation: (Rule: any) => Rule.required().email(),
     },
     {
       name: 'items',
@@ -138,10 +131,14 @@ export const orderSchema = {
           type: 'object',
           fields: [
             {
-              name: 'product',
-              title: 'Product',
-              type: 'reference',
-              to: [{type: 'product'}],
+              name: 'productName',
+              title: 'Product Name',
+              type: 'string',
+            },
+            {
+              name: 'productId',
+              title: 'Product ID',
+              type: 'string',
             },
             {
               name: 'quantity',
@@ -149,15 +146,25 @@ export const orderSchema = {
               type: 'number',
               validation: (Rule: any) => Rule.required().min(1),
             },
+            {
+              name: 'quantityLabel',
+              title: 'Quantity Label',
+              type: 'string',
+            },
+            {
+              name: 'price',
+              title: 'Price',
+              type: 'number',
+            },
           ],
           preview: {
             select: {
-              product: 'product.name',
+              productName: 'productName',
               quantity: 'quantity',
             },
-            prepare({product, quantity}: any) {
+            prepare({productName, quantity}: any) {
               return {
-                title: `${quantity}x ${product}`,
+                title: `${quantity}x ${productName}`,
               };
             },
           },
@@ -171,15 +178,38 @@ export const orderSchema = {
       description: 'Total in dollars',
     },
     {
+      name: 'needsShipping',
+      title: 'Needs Shipping',
+      type: 'boolean',
+      initialValue: false,
+    },
+    {
       name: 'deliveryAddress',
       title: 'Delivery Address',
       type: 'text',
       rows: 3,
     },
     {
-      name: 'deliveryDate',
-      title: 'Delivery Date',
-      type: 'date',
+      name: 'preferredDay',
+      title: 'Preferred Day',
+      type: 'string',
+    },
+    {
+      name: 'preferredTime',
+      title: 'Preferred Time',
+      type: 'string',
+    },
+    {
+      name: 'paymentMethod',
+      title: 'Payment Method',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Zelle', value: 'zelle'},
+          {title: 'Venmo', value: 'venmo'},
+          {title: 'Credit Card', value: 'credit-card'},
+        ],
+      },
     },
     {
       name: 'status',
@@ -188,7 +218,7 @@ export const orderSchema = {
       options: {
         list: [
           {title: 'New Order', value: 'new'},
-          {title: 'Confirmed', value: 'confirmed'},
+          {title: 'Payment Confirmed', value: 'payment-confirmed'},
           {title: 'Baking', value: 'baking'},
           {title: 'Ready for Delivery', value: 'ready'},
           {title: 'Delivered', value: 'delivered'},
