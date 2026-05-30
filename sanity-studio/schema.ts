@@ -438,6 +438,40 @@ export const siteSettingsSchema = {
       ],
       validation: (Rule: any) => Rule.max(6),
     },
+    {
+      name: 'businessEmail',
+      title: 'Business Email',
+      type: 'string',
+      description: 'Email address used in "From" field when sending order confirmations (e.g., orders@zizoubakes.com)',
+      validation: (Rule: any) => Rule.email(),
+      initialValue: 'orders@zizoubakes.com',
+    },
+    {
+      name: 'notificationEmails',
+      title: 'Order Notification Emails',
+      type: 'array',
+      description: 'Email addresses that will receive notifications for new orders',
+      of: [
+        {
+          type: 'string',
+          validation: (Rule: any) => Rule.email(),
+        },
+      ],
+    },
+    {
+      name: 'enableEmailNotifications',
+      title: 'Enable Email Notifications',
+      type: 'boolean',
+      description: 'Turn on/off email notifications for new orders',
+      initialValue: true,
+    },
+    {
+      name: 'businessName',
+      title: 'Business Name (for emails)',
+      type: 'string',
+      description: 'Name shown in email signatures and templates',
+      initialValue: "Zizou's Healthy Bakes",
+    },
   ],
 };
 

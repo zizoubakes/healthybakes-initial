@@ -70,6 +70,10 @@ export interface SiteSettings {
   whatsappNumber: string
   instagramHandle?: string
   deliveryInfo: string
+  businessEmail?: string
+  notificationEmails?: string[]
+  enableEmailNotifications?: boolean
+  businessName?: string
 }
 
 // Fetch all products
@@ -139,7 +143,11 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
     },
     whatsappNumber,
     instagramHandle,
-    deliveryInfo
+    deliveryInfo,
+    businessEmail,
+    notificationEmails,
+    enableEmailNotifications,
+    businessName
   }`
 
   try {
@@ -172,7 +180,7 @@ export interface CreateOrderData {
 }
 
 // Create a new order
-export async function createOrder(orderData: CreateOrderData): Promise<{ success: boolean; orderId?: string; error?: string }> {
+export async function createOrder(orderData: CreateOrderData): Promise<{ success: boolean; orderId?: string; orderNumber?: string; error?: string }> {
   try {
     // Generate order number
     const orderNumber = `ORD-${Date.now()}`
@@ -199,6 +207,7 @@ export async function createOrder(orderData: CreateOrderData): Promise<{ success
     return {
       success: true,
       orderId: result._id,
+      orderNumber,
     }
   } catch (error) {
     console.error('Error creating order:', error)
