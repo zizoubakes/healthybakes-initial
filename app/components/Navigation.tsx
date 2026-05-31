@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import CartButton from './CartButton';
 import CartModal from './CartModal';
 
@@ -16,6 +17,8 @@ interface NavigationProps {
 
 export default function Navigation({ navigationLinks }: NavigationProps) {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { data: session } = useSession();
+
   // Default links if none provided from Sanity
   const defaultLinks = [
     { label: 'Shop', url: '#shop' },
@@ -49,6 +52,15 @@ export default function Navigation({ navigationLinks }: NavigationProps) {
                 {link.label}
               </a>
             ))}
+            {session ? (
+              <Link href="/dashboard" className="auth-link">
+                My Account
+              </Link>
+            ) : (
+              <Link href="/auth/signin" className="auth-link">
+                Sign In
+              </Link>
+            )}
             <CartButton onClick={() => setIsCartOpen(true)} />
           </div>
         </div>

@@ -123,6 +123,13 @@ export const orderSchema = {
       validation: (Rule: any) => Rule.required().email(),
     },
     {
+      name: 'customerId',
+      title: 'Customer ID',
+      type: 'reference',
+      to: [{type: 'customer'}],
+      description: 'Link to customer account (if order placed by authenticated user)',
+    },
+    {
       name: 'items',
       title: 'Order Items',
       type: 'array',
@@ -475,4 +482,86 @@ export const siteSettingsSchema = {
   ],
 };
 
-export const schemas = [productSchema, orderSchema, siteSettingsSchema];
+export const customerSchema = {
+  name: 'customer',
+  title: 'Customers',
+  type: 'document',
+  fields: [
+    {
+      name: 'email',
+      title: 'Email',
+      type: 'string',
+      validation: (Rule: any) => Rule.required().email(),
+    },
+    {
+      name: 'name',
+      title: 'Full Name',
+      type: 'string',
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'passwordHash',
+      title: 'Password Hash',
+      type: 'string',
+      readOnly: true,
+      hidden: true,
+    },
+    {
+      name: 'savedAddresses',
+      title: 'Saved Addresses',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'label',
+              title: 'Address Label',
+              type: 'string',
+              description: 'e.g., Home, Work',
+            },
+            {
+              name: 'address',
+              title: 'Full Address',
+              type: 'text',
+              rows: 3,
+            },
+            {
+              name: 'isDefault',
+              title: 'Default Address',
+              type: 'boolean',
+              initialValue: false,
+            },
+          ],
+          preview: {
+            select: {
+              label: 'label',
+              address: 'address',
+            },
+            prepare({label, address}: any) {
+              return {
+                title: label || 'Address',
+                subtitle: address,
+              };
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: 'createdAt',
+      title: 'Account Created',
+      type: 'datetime',
+      readOnly: true,
+      initialValue: () => new Date().toISOString(),
+    },
+  ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'email',
+    },
+  },
+};
+
+export const schemas = [productSchema, orderSchema, siteSettingsSchema, customerSchema];

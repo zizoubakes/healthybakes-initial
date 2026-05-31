@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createOrder, type CreateOrderData, getSiteSettings } from '@/lib/sanity';
+import { createOrder, type CreateOrderData, getSiteSettings, client } from '@/lib/sanity';
 import { sendOrderEmails } from '@/lib/email';
+import { auth } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +13,20 @@ export async function POST(request: NextRequest) {
         { success: false, error: 'Missing required fields' },
         { status: 400 }
       );
+    }
+
+    // Check if user is authenticated and link order to customer account
+    const session = await auth();
+    if (session?.user?.email === orderData.email) {
+      // Find customer by email
+      const customer = await client.fetch(
+        `*[_type == "customer" && email == $email][0]._id`,
+        { email: orderData.email }
+      );
+
+      if (customer) {
+        orderData.customerId = customer;
+      }
     }
 
     // Create the order in Sanity

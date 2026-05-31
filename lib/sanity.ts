@@ -170,6 +170,7 @@ export interface OrderItem {
 export interface CreateOrderData {
   customerName: string
   email: string
+  customerId?: string
   items: OrderItem[]
   totalAmount: number
   needsShipping: boolean
@@ -185,7 +186,7 @@ export async function createOrder(orderData: CreateOrderData): Promise<{ success
     // Generate order number
     const orderNumber = `ORD-${Date.now()}`
 
-    const order = {
+    const order: any = {
       _type: 'order',
       orderNumber,
       customerName: orderData.customerName,
@@ -200,6 +201,14 @@ export async function createOrder(orderData: CreateOrderData): Promise<{ success
       status: 'new',
       notes: '',
       createdAt: new Date().toISOString(),
+    }
+
+    // Add customer reference if provided
+    if (orderData.customerId) {
+      order.customerId = {
+        _type: 'reference',
+        _ref: orderData.customerId,
+      };
     }
 
     const result = await writeClient.create(order)
