@@ -73,8 +73,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
 // Helper function to create a new customer
 export async function createCustomer(email: string, password: string, name: string) {
-  // Check if customer already exists
-  const existing = await client.fetch(
+  // Check if customer already exists (use writeClient to bypass CDN cache)
+  const existing = await writeClient.fetch(
     `*[_type == "customer" && email == $email][0]`,
     { email }
   );
